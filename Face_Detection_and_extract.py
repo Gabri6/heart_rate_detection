@@ -30,7 +30,7 @@ def FindArea(img):
 		cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 2)
 	cropped_image = img[face[0][1]:(face[0][1]+face[0][3]), face[0][0]:(face[0][0]+face[0][2])]
 	gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
-	eyes = eye_cascade.detectMultiScale(gray, 1.1, 4)
+	eyes = eye_cascade.detectMultiScale(gray, 1.3, 20)
 	for (x,y,w,h) in eyes:
 		cv2.rectangle(cropped_image, (x, y), (x+w, y+h), (255, 0, 0), 2)
 	print(len(eyes), len(face))
