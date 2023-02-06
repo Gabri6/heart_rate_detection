@@ -1,66 +1,63 @@
+#extract the data under the form of a matrix
 data = dlmread('results.txt')
 
 
+#separate the 3 sets of data (colonnes)
+r = data(:,1);
+g = data(:,2);
+b = data(:,3);
+#do the fast fourrier transform on each set
+fftR = fft(r);
+fftG = fft(g);
+fftB = fft(b);
+#find frequency from frame rate
+N = length(r);
 
-x = data(:,1);
-y = data(:,2);
-z = data(:,3);
-
-X = fft(x);
-Y = fft(y);
-Z = fft(z);
-
-N = length(x);
-
-fs = 14;
+fr = 14;
 f = (0:N-1)*fs/N;
 
-
+#cut the desired range of values
 f_min = 0.5;
 f_max = 4;
 idx_min = find(f >= f_min, 1);
 idx_max = find(f <= f_max, 1, 'last');
 f_filtered = f(idx_min:idx_max);
-X_filtered = X(idx_min:idx_max);
-Y_filtered = Y(idx_min:idx_max);
-Z_filtered = Z(idx_min:idx_max);
+fftR_filtered = fftR(idx_min:idx_max);
+fftG_filtered = fftG(idx_min:idx_max);
+fftB_filtered = fftB(idx_min:idx_max);
 
+#extract the max values for each sets and their corresponding frequency
+[R_max, R_idx] = max(abs(fftR_filtered));
+R_freq = f_filtered(X_idx);
 
-[X_max, X_idx] = max(abs(X_filtered));
-X_freq = f_filtered(X_idx);
+[G_max, G_idx] = max(abs(fftG_filtered));
+G_freq = f_filtered(G_idx);
 
-[Y_max, Y_idx] = max(abs(Y_filtered));
-Y_freq = f_filtered(Y_idx);
+[B_max, B_idx] = max(abs(fftB_filtered));
+B_freq = f_filtered(B_idx);
 
-[Z_max, Z_idx] = max(abs(Z_filtered));
-Z_freq = f_filtered(Z_idx);
-
-
+#Plot just to visualize
 figure;
 subplot(3,1,1);
-plot(f_filtered, abs(X_filtered));
-xlabel('Fréquence (Hz)');
-ylabel('Amplitude X');
-title('Spectre de fréquence filtré X');
+plot(f_filtered, abs(fftR_filtered));
+xlabel('Frequency (Hz)');
+ylabel('POWER');
+title('frequency spectrum for component 1');
 
 subplot(3,1,2);
-plot(f_filtered, abs(Y_filtered));
-xlabel('Fréquence (Hz)');
-ylabel('Amplitude Y');
-title('Spectre de fréquence filtré Y');
+plot(f_filtered, abs(fftG_filtered));
+xlabel('Frequency (Hz)');
+ylabel('POWER');
+title('frequency spectrum for component 2');
 
 subplot(3,1,3);
-plot(f_filtered, abs(Z_filtered));
-xlabel('Fréquence (Hz)');
-ylabel('Amplitude Z');
-title('Spectre de fréquence filtré Z');
+plot(f_filtered, abs(fftB_filtered));
+xlabel('Frequency (Hz)');
+ylabel('POWER');
+title('frequency spectrum for component 3');
 
 
-
-##fprintf("X: Valeur max = %f, Fréquence associée = %f Hz\n", X_max, X_freq);
-##fprintf("Y: Valeur max = %f, Fréquence associée = %f Hz\n", Y_max, Y_freq);
-##fprintf("Z: Valeur max = %f, Fréquence associée = %f Hz\n", Z_max, Z_freq);
-
+#Take the max value from the max of the 3 fft sets and process the heart rate
 val_freq = [X_max X_freq; Y_max Y_freq; Z_max Z_freq];
 
 [val_max, idx] = max(val_freq(:,1));

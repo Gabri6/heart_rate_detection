@@ -3,7 +3,7 @@
 	Made by : Lucas MARAIS
 	Date: 02/02/2023
 	updated by: Lucas MARAIS
-	UpDate: 02/02/2023
+	UpDate: 06/02/2023
 
 """
 
@@ -41,18 +41,23 @@ def FindArea(img):
 	return [[x+face[0],y+face[1]],[x2+face[0],y2+face[1]]]
 
 def average(coord, img):
+	"""
+	Returns the average pixels color value in [R G B] format, using two points to crop the image, imput = [[point1],[point2]] img
+	"""
 	cropped_image = img[coord[0][1]:coord[1][1], coord[0][0]:coord[1][0]]
 	#cv2.imshow("part selected",cropped_image)
 	ACPR = np.average(cropped_image, axis=0)
 	AvrgColor = np.average(ACPR, axis=0)
 	return AvrgColor
 
-def fICA(colors):
-	pass
-stacked = np.empty((0,3))
+# def fICA(colors):
+# 	pass
 
 
 def processRGBdata(x):
+	"""
+	return the same list for as the imput list following the normalisation of the values by processing the mean and standard deviation.
+	"""
 	for i in range(0,3):
 		y=0
 		z=0
@@ -76,7 +81,8 @@ def processRGBdata(x):
 
 
 
-
+#Process all images
+stacked = np.empty((0,3))
 for i in [str(x).zfill(4) for x in range(1, 2001)]:
 	try:
 		print(i)
@@ -89,12 +95,12 @@ for i in [str(x).zfill(4) for x in range(1, 2001)]:
 	# cv2.waitKey(0)
 	# print(stacked)
 
-
+#ICA
 normald = processRGBdata(stacked)
 
 ICA = FastICA(n_components=3)
 source = ICA.fit_transform(normald)
-
+#Export for octave
 with open("results.txt", "w") as f:
 	for x in range(len(source)):
 		f.write(f'{source[x][0]},{source[x][1]},{source[x][2]}\n')
