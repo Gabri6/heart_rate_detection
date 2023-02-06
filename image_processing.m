@@ -15,9 +15,7 @@ myheight = uint32(ROI(1,2)-ROI(1,1))
 mylength = uint32(ROI(2,2)-ROI(2,1))
 resolution = myheight*mylength
 
-myred=[];
-mygreen=[];
-myblue=[];
+mycolors=[;;];
 
 for i=[0001:1:1860]
   red = uint32(0);
@@ -52,16 +50,27 @@ for i=[0001:1:1860]
       blue = blue + uint32(myImage(h,l,3));
     endfor
   endfor
-  myred(i) = red/(myheight*mylength);
-  mygreen(i) = green/(myheight*mylength);
-  myblue(i) = blue/(myheight*mylength);
+  mycolors(i,1) = red/(myheight*mylength);
+  mycolors(i,2) = green/(myheight*mylength);
+  mycolors(i,3) = blue/(myheight*mylength);
 
   fprintf('%i / 1860\n', i)
 endfor
 
-fftred = fft(myred);
-fftgreen = fft(mygreen);
-fftblue = fft(myblue);
+for i=1:3
+  for j=1:length(mycolors)
+    mymean = mean(mycolors(:,i));
+    mystd = std(mycolors(:,i));
+    mycolors(j,i) = (mycolors(j,i)-mymean)/mystd;
+  endfor
+endfor
+
+
+
+
+fftred = fft(mycolors(:,1));
+fftgreen = fft(mycolors(:,2));
+fftblue = fft(mycolors(:,3));
 
 
 figure;
