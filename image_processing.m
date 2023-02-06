@@ -9,20 +9,23 @@
 %%%%%%%%%%%%%%%%
 
 
+framerate=30;
 
 ROI = [315 360;560 580] %720
 myheight = uint32(ROI(1,2)-ROI(1,1))
 mylength = uint32(ROI(2,2)-ROI(2,1))
-resolution = myheight*mylength
+resolution = myheight*mylength;
 
-mycolors=[;;];
+mycolors=[];
 
-for i=[0001:1:1860]
+for i=[0001:1:900] %until 1860
   red = uint32(0);
   green = uint32(0);
   blue = uint32(0);
+  
   imgNum = int2str(i);
   numbDigits= abs(floor(log10(abs(i-1)+1))+1);
+  
   if (numbDigits == 1)
     imgNum = ['0' '0' '0' imgNum];
   elseif(numbDigits == 2)
@@ -58,30 +61,64 @@ for i=[0001:1:1860]
 endfor
 
 for i=1:3
+  y=0;
+  z=0;
   for j=1:length(mycolors)
-    mymean = mean(mycolors(:,i));
-    mystd = std(mycolors(:,i));
+    y+=mycolors(j,i);
+    z+=1;
+  endfor
+  
+  mymean=y/z
+  m=0;
+  
+  for j=1:length(mycolors)
+    m+=abs(mycolors(j,i)-avg);
+  endfor
+    mystd=sqrt(m/z)
+    %mymean = mean(mycolors(:,i));
+    %mystd = std(mycolors(:,i));
+  for j=1:length(mycolors)
     mycolors(j,i) = (mycolors(j,i)-mymean)/mystd;
   endfor
 endfor
-
-
+%normalisation of the values
 
 
 fftred = fft(mycolors(:,1));
 fftgreen = fft(mycolors(:,2));
 fftblue = fft(mycolors(:,3));
+%normal fast fourier transform
+
+N=size(mycolors)(1);
+freq=(0:N-1)*framerate/N;
+%frequency from frame rate
+
+
+minfreq=0.5;
+maxfreq=4;
+idx_min = find(freq >= minfreq, 1);
+idx_max = find(freq <= maxfreq, 1, 'last');
+filtered_freq = freq(idx_min:idx_max);
+
+fftred_filtered = fftred(idx_min:idx_max);
+fftgreen_filtered = fftgreen(idx_min:idx_max);
+fftblue_filtered = fftblue(idx_min:idx_max);
+%filtered fastfourier transform
+
 
 
 figure;
 subplot(3,1,1);
-plot(myred);
+%plot(mycolors(:,1));
+plot(filtered_freq, abs(fftred_filtered));
 title('red');
 
 subplot(3,1,2);
-plot(mygreen);
+%plot(mycolors(:,2));
+plot(filtered_freq, abs(fftgreen_filtered));
 title('green');
 
 subplot(3,1,3);
-plot(myblue);
+%plot(mycolors(:,3));
+plot(filtered_freq, abs(fftblue_filtered));
 title('blue');
