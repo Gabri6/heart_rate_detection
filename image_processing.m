@@ -10,15 +10,15 @@
 
 
 framerate=30;
-
-ROI = [315 360;560 580] %720
-myheight = uint32(ROI(1,2)-ROI(1,1))
-mylength = uint32(ROI(2,2)-ROI(2,1))
-resolution = myheight*mylength;
+disp("START")
+ROI = [315 360;560 720]; %region of interest determined by hand
+myheight = uint32(ROI(1,2)-ROI(1,1)); %height of ROI
+mylength = uint32(ROI(2,2)-ROI(2,1)); %length of ROI
+resolution = myheight*mylength; %number of pixels in ROI
 
 mycolors=[];
 
-for i=[0001:1:900] %until 1860
+for i=[0001:1:1860] %go through each image
   red = uint32(0);
   green = uint32(0);
   blue = uint32(0);
@@ -45,17 +45,9 @@ for i=[0001:1:900] %until 1860
 
   myImage=imread(['video_robot/' imgNum '.png']);
 
-  for h=ROI(1,1):ROI(1,2) %height of the ROI
-    for l=ROI(2,1):ROI(2,2) %length of the ROI
-      [myImage(h,l,1) myImage(h,l,2) myImage(h,l,3)];
-      red = red + uint32(myImage(h,l,1));
-      green = green + uint32(myImage(h,l,2));
-      blue = blue + uint32(myImage(h,l,3));
-    endfor
-  endfor
-  mycolors(i,1) = red/(myheight*mylength);
-  mycolors(i,2) = green/(myheight*mylength);
-  mycolors(i,3) = blue/(myheight*mylength);
+  mycolors(i,1) = mean(mean(myImage(ROI(1,1):ROI(1,2),ROI(2,1):ROI(2,2),1)));
+  mycolors(i,2) = mean(mean(myImage(ROI(1,1):ROI(1,2),ROI(2,1):ROI(2,2),2)));
+  mycolors(i,3) = mean(mean(myImage(ROI(1,1):ROI(1,2),ROI(2,1):ROI(2,2),3)));
 
   fprintf('%i / 1860\n', i)
 endfor
@@ -68,15 +60,13 @@ for i=1:3
     z+=1;
   endfor
   
-  mymean=y/z
+  mymean=y/z;
   m=0;
   
   for j=1:length(mycolors)
     m+=abs(mycolors(j,i)-avg);
   endfor
-    mystd=sqrt(m/z)
-    %mymean = mean(mycolors(:,i));
-    %mystd = std(mycolors(:,i));
+    mystd=sqrt(m/z);
   for j=1:length(mycolors)
     mycolors(j,i) = (mycolors(j,i)-mymean)/mystd;
   endfor
@@ -105,20 +95,34 @@ fftgreen_filtered = fftgreen(idx_min:idx_max);
 fftblue_filtered = fftblue(idx_min:idx_max);
 %filtered fastfourier transform
 
+%exctract the max values of the fast fourier transform for each color 
+[red_max, red_idx] = max(abs(fftred_filtered));
+red_freq = filtered_freq(red_idx);
+
+[green_max, green_idx] = max(abs(fftgreen_filtered));
+green_freq = filtered_freq(green_idx);
+
+[blue_max, blue_idx] = max(abs(fftblue_filtered));
+blue_freq = filtered_freq(blue_idx);
 
 
+%plot the filtered fft against the filtered frequency
 figure;
 subplot(3,1,1);
-%plot(mycolors(:,1));
 plot(filtered_freq, abs(fftred_filtered));
 title('red');
 
 subplot(3,1,2);
-%plot(mycolors(:,2));
 plot(filtered_freq, abs(fftgreen_filtered));
 title('green');
 
 subplot(3,1,3);
-%plot(mycolors(:,3));
 plot(filtered_freq, abs(fftblue_filtered));
 title('blue');
+
+#Take the max value from the max of the 3 fft sets and process the heart rate
+val_freq = [red_max red_freq; green_max green_freq; blue_max blue_freq];
+
+[val_max, idx] = max(val_freq(:,1));
+freq_max = val_freq(idx,2);
+fprintf("BPM : %f\n", freq_max*60);
