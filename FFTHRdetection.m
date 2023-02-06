@@ -14,7 +14,7 @@ fftB = fft(b);
 N = length(r);
 
 fr = 14;
-f = (0:N-1)*fs/N;
+f = (0:N-1)*fr/N;
 
 #cut the desired range of values
 f_min = 0.5;
@@ -28,7 +28,7 @@ fftB_filtered = fftB(idx_min:idx_max);
 
 #extract the max values for each sets and their corresponding frequency
 [R_max, R_idx] = max(abs(fftR_filtered));
-R_freq = f_filtered(X_idx);
+R_freq = f_filtered(R_idx);
 
 [G_max, G_idx] = max(abs(fftG_filtered));
 G_freq = f_filtered(G_idx);
@@ -58,7 +58,7 @@ title('frequency spectrum for component 3');
 
 
 #Take the max value from the max of the 3 fft sets and process the heart rate
-val_freq = [X_max X_freq; Y_max Y_freq; Z_max Z_freq];
+val_freq = [R_max R_freq; G_max G_freq; B_max B_freq];
 
 [val_max, idx] = max(val_freq(:,1));
 freq_max = val_freq(idx,2);
