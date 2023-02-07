@@ -19,7 +19,7 @@ from sklearn.decomposition import FastICA
 
 def FindArea(img):
 	"""
-	This will extract the coordinates of the box above the eyes, returns a list under the form [[x,y],[x,y]], imput = img
+	This will extract the coordinates of the box above the eyes, returns a list under the form [[x,y],[x,y]], input = img
 	"""
 
 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -42,7 +42,7 @@ def FindArea(img):
 
 def average(coord, img):
 	"""
-	Returns the average pixels color value in [R G B] format, using two points to crop the image, imput = [[point1],[point2]] img
+	Returns the average pixels color value in [R G B] format, using two points to crop the image, input = [[point1],[point2]] img
 	"""
 	cropped_image = img[coord[0][1]:coord[1][1], coord[0][0]:coord[1][0]]
 	#cv2.imshow("part selected",cropped_image)
@@ -50,13 +50,18 @@ def average(coord, img):
 	AvrgColor = np.average(ACPR, axis=0)
 	return AvrgColor
 
-# def fICA(colors):
-# 	pass
+def fICA(colors):
+	"""
+	return the ICA of the given 3 component data.
+	"""
+	ICA = FastICA(n_components=3)
+	return ICA.fit_transform(normald)
 
 
 def processRGBdata(x):
 	"""
-	return the same list for as the imput list following the normalisation of the values by processing the mean and standard deviation.
+	return the same list for as the input list following the normalisation of the values by processing the mean and standard deviation.
+	Done in octave too (do not use both at the same time it is completly useless)
 	"""
 	for i in range(0,3):
 		y=0
@@ -71,7 +76,7 @@ def processRGBdata(x):
 		mean = m/z
 		SD = np.sqrt((m)/z)
 		for j in range(len(x)):
-			x[j][i]=(x[j][i]-mean)/SD
+			x[j][i]=(x[j][i]-w)/SD
 	return x
 
 
@@ -97,10 +102,15 @@ for i in [str(x).zfill(4) for x in range(1, 2001)]:
 
 #ICA
 normald = processRGBdata(stacked)
+source = fICA(normald)
+# or
+# normald = stacked
 
-ICA = FastICA(n_components=3)
-source = ICA.fit_transform(normald)
+
 #Export for octave
 with open("results.txt", "w") as f:
 	for x in range(len(source)):
 		f.write(f'{source[x][0]},{source[x][1]},{source[x][2]}\n')
+with open("WtICA.txt", "w") as f:
+	for x in range(len(source)):
+		f.write(f'{normald[x][0]},{normald[x][1]},{normald[x][2]}\n')

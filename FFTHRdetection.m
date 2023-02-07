@@ -1,5 +1,46 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Creator : Lucas Marais
+% Date : 06/02/23
+% Time : 14:20:00
+% just making the things done and if you cross your fingers it works
+%
+%
+% Last update : Lucas
+% D-T : 06/02/2023-14:16:00
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%Done in python
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #extract the data under the form of a matrix
-data = dlmread('results.txt')
+data = dlmread('WtICA.txt')
+covar(data);
+##[icasig] = FastICA(data);
+##disp(icasig)
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%de la m****
+##for i=1:3
+##  m = mean(data(:,i));
+##  SD = std(data(:,i));
+##  for j=1:size(data,1)
+##    data(j,i)=(data(j,i)-m)/SD;
+##  endfor
+##endfor
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%Not done in python from this point
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
 
 
 #separate the 3 sets of data (colonnes)
