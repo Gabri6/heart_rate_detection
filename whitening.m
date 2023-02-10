@@ -11,8 +11,19 @@ function X_whiten = whitening(X)
 % D-T : 06/02/2023-14:16:00
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-co = covar(X);
-[E, D] = eig(co);
-D_inv = sqrt(inv(D));
-X_whiten = E * (D_inv * (E' * X));
+
+
+[E, D] = eig(covar(X));
+D = diag(D);
+W = E * diag(1./sqrt(D)) * E';
+X_whiten = X*W;
+
+
+
+
+
+##co = cov(X);
+##[E, D] = eig(co);
+##D_inv = sqrt(inv(D));
+##X_whiten = E * (D_inv * (E' * X));
 end

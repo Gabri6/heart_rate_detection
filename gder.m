@@ -12,4 +12,4 @@ function [X] = gder(X)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-X = 1-tanh(X)*tanh(X)
+X = 1-tanh(X).*tanh(X);

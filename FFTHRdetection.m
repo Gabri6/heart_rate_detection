@@ -15,10 +15,9 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #extract the data under the form of a matrix
-data = dlmread('WtICA.txt')
-covar(data);
-##[icasig] = FastICA(data);
-##disp(icasig)
+data = dlmread('WtICA.txt');
+[icasig] = FastICA(data);
+%disp(icasig)
 
 
 

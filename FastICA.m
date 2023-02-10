@@ -12,35 +12,35 @@ function [icasig] = FastICA(X)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-iter = 1000;
-tolerance=1e-5;
+iter = 1000000;
+tolerance=1e-10;
 % Center the data
 X = center(X);
-component_nbr = size(X,2);
+component_nbr = size(X,1);
 % Whiten the data
 X_whiten = whitening(X);
 
 
 
 %rdm matrix gen
-W = zeros(component_nbr, component_nbr);
+W = zeros(component_nbr,size(X,2));
 
 % Main loop of the FastICA algorithm
-for i = 1:component_nbr
-  w = rand(component_nbr);
+for i = 1:size(X,2)
+  w = rand(component_nbr,1);
   for j = 1:iter
-    w_new = calc_new_w(w);
+    w_new = calc_new_w(w, X_whiten);
     if i >= 1
-      w_new -= (w_new * W(:,i)) * W(:,i)
+      w_new -= (w_new * W(:,i)') * W(:,i);
     endif
-    dist = abs(sum(abs(w * w_new))-1)
-    w = w_new
+    dist = abs(sum(abs(w .* w_new))-1);
+    w = w_new;
     if dist < tolerance
       break;
     endif
   endfor
   W(:,i)=w
 endfor    
-icasig = W * X_whiten
+icasig = W' * X_whiten;
 end
 
