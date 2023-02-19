@@ -43,6 +43,7 @@ def FindArea(img):
 			if len(eye) == 2:
 				break
 	for (x,y,w,h) in eyes:6
+
 		cv2.rectangle(cropped_image, (x, y), (x+w, y+h), (255, 0, 0), 2)
 	print(len(eyes), len(face))
 	face = face[0]
@@ -123,5 +124,5 @@ with open("results.txt", "w") as f:
 	for x in range(len(source)):
 		f.write(f'{source[x][0]},{source[x][1]},{source[x][2]}\n')
 with open("WtICA.txt", "w") as f:
-	for x in range(len(source)):
+	for x in range(len(stacked)):
 		f.write(f'{normald[x][0]},{normald[x][1]},{normald[x][2]}\n')
