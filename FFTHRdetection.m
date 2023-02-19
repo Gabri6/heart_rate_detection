@@ -16,14 +16,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #extract the data under the form of a matrix
 data = dlmread('results.txt');
-%[icasig] = FastICA(data);
+#data = normal(data);
+#[icasig] = FastICA(data);
 %disp(icasig)
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-%de la m****
 ##for i=1:3
 ##  m = mean(data(:,i));
 ##  SD = std(data(:,i));

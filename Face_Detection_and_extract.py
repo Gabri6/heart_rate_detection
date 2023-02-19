@@ -25,26 +25,33 @@ def FindArea(img):
 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades +'haarcascade_frontalface_default.xml')
 	eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades +'haarcascade_eye.xml')
-
-	for i in range(1.01,2,0.01):
+	breakout = False
+	for i in range(101,200):
 		for j in range(5,10):
 			#test to have only on face
-			face = face_cascade.detectMultiScale(gray, i, j)
-			if len(face) == 1:
+			face = face_cascade.detectMultiScale(gray, (i/100), j)
+			if int(len(face)) == int(1):
+				breakout = True
 				break
+		if breakout:
+			break
 	for (x,y,w,h) in face:
 		cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 2)
 	cropped_image = img[face[0][1]:(face[0][1]+face[0][3]), face[0][0]:(face[0][0]+face[0][2])]
 	gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
-	for i in range(1.01,2,0.01):
+	breakout = False
+	for i in range(101,200):
 		for j in range(5,10):
 			#test for 2 eyes
-			eyes = eye_cascade.detectMultiScale(gray, 1.03, 30)
-			if len(eye) == 2:
+			eyes = eye_cascade.detectMultiScale(gray, (i/100), j)
+			if len(eyes) == 2:
+				breakout = True
 				break
-	for (x,y,w,h) in eyes:6
-
+		if breakout:
+			break
+	for (x,y,w,h) in eyes:
 		cv2.rectangle(cropped_image, (x, y), (x+w, y+h), (255, 0, 0), 2)
+	
 	print(len(eyes), len(face))
 	face = face[0]
 	x,y,x2,y2 = int(min([eyes[0][0],eyes[1][0]])),int((1/8)*(max([eyes[0][1],eyes[1][1]]))),int(max([eyes[0][0],eyes[1][0]])+min([eyes[0][2],eyes[1][2]])), int(max([eyes[0][1],eyes[1][1]])-(1/8)*(max([eyes[0][1],eyes[1][1]])))

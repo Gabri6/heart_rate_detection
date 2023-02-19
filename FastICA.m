@@ -22,11 +22,12 @@ X_whiten = whitening(X);
 
 
 
-%rdm matrix gen
+
 W = zeros(component_nbr,size(X,2));
 
 % Main loop of the FastICA algorithm
 for i = 1:size(X,2)
+  %rdm matrix gen
   w = rand(component_nbr,1);
   for j = 1:iter
     w_new = calc_new_w(w, X_whiten);
