@@ -15,8 +15,8 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #extract the data under the form of a matrix
-data = dlmread('WtICA.txt');
-[icasig] = FastICA(data);
+data = dlmread('results.txt');
+%[icasig] = FastICA(data);
 %disp(icasig)
 
 
@@ -53,11 +53,11 @@ fftB = fft(b);
 #find frequency from frame rate
 N = length(r);
 
-fr = 14;
+fr = 30;
 f = (0:N-1)*fr/N;
 
 #cut the desired range of values
-f_min = 0.5;
+f_min = 0.6;
 f_max = 4;
 idx_min = find(f >= f_min, 1);
 idx_max = find(f <= f_max, 1, 'last');

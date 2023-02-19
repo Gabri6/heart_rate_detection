@@ -12,7 +12,7 @@ function [icasig] = FastICA(X)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-iter = 1000000;
+iter = 10000;
 tolerance=1e-10;
 % Center the data
 X = center(X);

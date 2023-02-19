@@ -25,13 +25,24 @@ def FindArea(img):
 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades +'haarcascade_frontalface_default.xml')
 	eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades +'haarcascade_eye.xml')
-	face = face_cascade.detectMultiScale(gray, 1.1, 10)
+
+	for i in range(1.01,2,0.01):
+		for j in range(5,10):
+			#test to have only on face
+			face = face_cascade.detectMultiScale(gray, i, j)
+			if len(face) == 1:
+				break
 	for (x,y,w,h) in face:
 		cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 2)
 	cropped_image = img[face[0][1]:(face[0][1]+face[0][3]), face[0][0]:(face[0][0]+face[0][2])]
 	gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
-	eyes = eye_cascade.detectMultiScale(gray, 1.3, 20)
-	for (x,y,w,h) in eyes:
+	for i in range(1.01,2,0.01):
+		for j in range(5,10):
+			#test for 2 eyes
+			eyes = eye_cascade.detectMultiScale(gray, 1.03, 30)
+			if len(eye) == 2:
+				break
+	for (x,y,w,h) in eyes:6
 		cv2.rectangle(cropped_image, (x, y), (x+w, y+h), (255, 0, 0), 2)
 	print(len(eyes), len(face))
 	face = face[0]
